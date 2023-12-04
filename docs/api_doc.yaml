@@ -1,0 +1,107 @@
+openapi: 3.0.0
+info:
+  title: API Sira
+  description: API para el manejo de datos de explotación ganadera.
+  version: "1.07"
+
+servers:
+  - url: https://api.sira.es/v1
+
+paths:
+  /trabajos:
+    get:
+      summary: Obtener trabajos realizados
+      description: Devuelve una lista de trabajos realizados en un rango de fechas.
+      operationId: getTrabajos
+      parameters:
+        - name: fechaInicio
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: fechaFin
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: Explotacion
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+
+      responses:
+        '200':
+          description: Lista de trabajos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    fechaLectura:
+                      type: string
+                      format: date
+                    tipoTrabajo:
+                      type: string
+                    explotacion:
+                      type: string
+                    urlDescarga:
+                      type: string
+      security:
+        - bearerAuth: []
+
+  /adultos:
+    get:
+      summary: Obtener información de animales adultos
+      description: Devuelve un array de animales adultos con información detallada.
+      operationId: getAdultos
+      parameters:
+        - name: explotacion
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Array de animales adultos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    fechaNacimiento:
+                      type: string
+                      format: date
+                    idPadre:
+                      type: string
+                    idMadre:
+                      type: string
+                    sexo:
+                      type: string
+                    listaPartos:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          fechaParto:
+                            type: string
+                            format: date
+                          numeroCrias:
+                            type: integer
+      security:
+        - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
